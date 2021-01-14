@@ -75,14 +75,15 @@ WSGI_APPLICATION = 'fuelGr.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+from config import configuration as cfg
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb',
-        'USER': 'fuelUser',
-        'PASSWORD': "Https80",
-        'HOST': "127.0.0.3",
-        'PORT': "3306",
+        'NAME': cfg.name,
+        'USER': cfg.user,
+        'PASSWORD': cfg.password,
+        'HOST': cfg.host,
+        'PORT': cfg.port,
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
@@ -127,3 +128,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
