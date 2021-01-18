@@ -15,29 +15,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers, serializers, viewsets
-from rest_api.views import GasStationViewSet
-
-# # Serializers define the API representation.
-# class GasStationSerializer(serializers.HyperlinkedModelSerializer):
-# 	class Meta:
-# 		model = Gasstations
-# 		fields = ['gasstationid', 'fuelcompid', 'gasstationlat', 'gasstationlong']
-
-# # ViewSets define the view behavior.
-# class GasStationViewSet(viewsets.ModelViewSet):
-# 	queryset = Gasstations.objects.all()
-# 	serializer_class = GasStationSerializer
+from rest_framework import routers
+from rest_framework.urlpatterns import format_suffix_patterns
+from rest_api import views
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'station', GasStationViewSet)
+
+router.register(r'station', views.GasStationViewSet, basename="")
+router.register(r'price', views.AllPrices, basename="")
+router.register(r'price/<int:pk>', views.StationPrices , basename="price")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 
 urlpatterns = [
 	path('admin/', admin.site.urls),
-	path('', include(router.urls)),
-	path('rest/', include('rest_framework.urls', namespace='rest_framework'))
+	path('rest/', include('rest_framework.urls', namespace='rest_framework')),
+	path('api/', include(router.urls))
+	# path("price/",views.AllPrices.as_view()),
+	# path("price/<int:pk>", views.StationPrices.as_view()),
 ]
+print("warning ",urlpatterns)

@@ -1,9 +1,13 @@
 from rest_framework import serializers
 
-from .models import Gasstations
+from .models import Gasstations, Pricedata
 
-class GasStationSerializer(serializers.HyperlinkedModelSerializer):
+class GasStationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gasstations
-        fields = ["fuelcompnormalname","fuelcompid","gasstationlat","gasstationlong"]
+        fields = '__all__'
 
+class PricedataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pricedata
+        fields = '__all__' 
