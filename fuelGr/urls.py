@@ -23,7 +23,7 @@ from rest_api import views
 router = routers.DefaultRouter()
 
 router.register(r'station', views.GasStationViewSet, basename="")
-router.register(r'price', views.AllPrices, basename="")
+router.register(r'price', views.StationPrices, basename="")
 router.register(r'price/<int:pk>', views.StationPrices , basename="price")
 
 # Wire up our API using automatic URL routing.

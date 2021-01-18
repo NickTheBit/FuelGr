@@ -16,16 +16,6 @@ class GasStationViewSet(viewsets.ViewSet):
 		serializer = GasStationSerializer(stations, many=True)
 		return Response(serializer.data)
 
-class AllPrices(viewsets.ViewSet):
-
-	def list(self, request, format=None):
-		data = Pricedata.objects.all()
-		serializer = PricedataSerializer(data, many=True)
-		return Response(serializer.data)
-	
-	def post(self, request):
-		raise Http404
-
 class StationPrices(viewsets.ViewSet):
 
 	def get_object(self, pk):
@@ -33,6 +23,11 @@ class StationPrices(viewsets.ViewSet):
 			return Pricedata.objects.filter(gasstationid=pk)
 		except Pricedata.DoesNotExist:
 			raise Http404
+
+	def list(self, request, format=None):
+		data = Pricedata.objects.all()
+		serializer = PricedataSerializer(data, many=True)
+		return Response(serializer.data)
 
 	def retrieve(self, request, pk, format=None):
 		data = self.get_object(pk)
