@@ -36,4 +36,3 @@ urlpatterns = [
 	# path("price/",views.AllPrices.as_view()),
 	# path("price/<int:pk>", views.StationPrices.as_view()),
 ]
-print("warning ",urlpatterns)

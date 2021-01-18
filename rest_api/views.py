@@ -11,14 +11,14 @@ from .serializers import GasStationSerializer, PricedataSerializer
 
 class GasStationViewSet(viewsets.ViewSet):
 
-	def get(self, request):
-		data = Gasstations.objects.all()
-		serializer = GasStationSerializer(data)
+	def list(self, request):
+		stations = Gasstations.objects.all()
+		serializer = GasStationSerializer(stations, many=True)
 		return Response(serializer.data)
 
 class AllPrices(viewsets.ViewSet):
 
-	def get(self, request, format=None):
+	def list(self, request, format=None):
 		data = Pricedata.objects.all()
 		serializer = PricedataSerializer(data, many=True)
 		return Response(serializer.data)
@@ -34,20 +34,20 @@ class StationPrices(viewsets.ViewSet):
 		except Pricedata.DoesNotExist:
 			raise Http404
 
-	def get(self, request, pk, format=None):
+	def retrieve(self, request, pk, format=None):
 		data = self.get_object(pk)
 		serializer = PricedataSerializer(data, many=True)
 		return Response(serializer.data)
 
-	def put(self, request, pk, format=None):
-		data = self.get_object(pk)
-		serializer = PricedataSerializer(data, data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	# def put(self, request, pk, format=None):
+	# 	data = self.get_object(pk)
+	# 	serializer = PricedataSerializer(data, data=request.data)
+	# 	if serializer.is_valid():
+	# 		serializer.save()
+	# 		return Response(serializer.data)
+	# 	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-	def delete(self, request, pk, format=None):
-		data = self.get_object(pk)
-		data.delete()
-		return Response(status=status.HTTP_204_NO_CONTENT)
+	# def delete(self, request, pk, format=None):
+	# 	data = self.get_object(pk)
+	# 	data.delete()
+	# 	return Response(status=status.HTTP_204_NO_CONTENT)
