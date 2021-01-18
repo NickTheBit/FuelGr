@@ -11,9 +11,20 @@ from .serializers import GasStationSerializer, PricedataSerializer
 
 class GasStationViewSet(viewsets.ViewSet):
 
+	def get_object(self, pk):
+		try:
+			return Gasstations.objects.get(gasstationid=pk)
+		except Gasstations.DoesNotExist:
+			raise Http404
+
 	def list(self, request):
 		stations = Gasstations.objects.all()
 		serializer = GasStationSerializer(stations, many=True)
+		return Response(serializer.data)
+
+	def retrieve(self, request, pk):
+		data = self.get_object(pk)
+		serializer = GasStationSerializer(data, many=False)
 		return Response(serializer.data)
 
 class StationPrices(viewsets.ViewSet):
