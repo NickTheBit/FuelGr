@@ -18,6 +18,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_api import views
+from website import views as web
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -33,7 +34,6 @@ router.register(r'price/<int:pk>', views.StationPrices , basename="price")
 urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('rest/', include('rest_framework.urls', namespace='rest_framework')),
-	path('api/', include(router.urls))
-	# path("price/",views.AllPrices.as_view()),
-	# path("price/<int:pk>", views.StationPrices.as_view()),
+	path('api/', include(router.urls)),
+	path('', web.index )
 ]
