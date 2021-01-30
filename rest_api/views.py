@@ -10,6 +10,7 @@ from .serializers import GasStationSerializer, PricedataSerializer
 # Create your views here.
 
 class GasStationViewSet(viewsets.ViewSet):
+	queryset = Gasstations.objects.all()
 
 	def get_object(self, pk):
 		try:
@@ -28,6 +29,7 @@ class GasStationViewSet(viewsets.ViewSet):
 		return Response(serializer.data)
 
 class StationPrices(viewsets.ViewSet):
+	queryset = Pricedata.objects.all()
 
 	def get_object(self, pk):
 		try:
