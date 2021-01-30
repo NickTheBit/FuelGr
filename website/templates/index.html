@@ -25,8 +25,7 @@
 
 				class data {
 					constructor(lat, lng, img, id) {
-						this.lat = lat;
-						this.lng = lng;
+						this.loc = new OpenLayers.LonLat(lat,lng);
 						this.img = img
 						this.id = id;
 					}
@@ -38,8 +37,8 @@
 					addToLayer(layer) {
 						var size = new OpenLayers.Size(32, 37);
 						var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-						var icon = new OpenLayers.Icon('img/marker/' + this.img, size, offset);
-						var marker = new OpenLayers.Marker(new OpenLayers.LonLat(this.lat, this.lng), icon);
+						var icon = new OpenLayers.Icon('static/icons/' + this.img, size, offset);
+						var marker = new OpenLayers.Marker(this.loc, icon);
 						layer.addMarker(marker);
 
 						var func = partial(this.showDetails,this);
@@ -47,17 +46,17 @@
 					}
 				}
 
+				// Loading map container and basic layer
 				var map = new OpenLayers.Map("mapdiv");
 				map.addLayer(new OpenLayers.Layer.OSM());
 
-
+				// data class will be used to load future gasstations
 				var markers = new OpenLayers.Layer.Markers("Markers");
-				var loca = new data(0.1279688, 51.5077286, "alpha.jpg", 69);
+				var loca = new data(0.1279688, 51.5077286, "4.png", 422);
 
 				loca.addToLayer(markers);
 				map.addLayer(markers);
 
-				// markers.addMarker(new OpenLayers.Marker(lonLat));
 
 				var lonLat = new OpenLayers.LonLat(0.1279688, 51.5077286);
 				var zoom = 16;
