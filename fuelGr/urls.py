@@ -35,5 +35,5 @@ urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('rest/', include('rest_framework.urls', namespace='rest_framework')),
 	path('api/', include(router.urls)),
-	path('', web.index )
+	path('', web.IndexView.as_view() )
 ]

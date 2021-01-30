@@ -1,0 +1,69 @@
+{% include "header.html" %}
+<style>
+	.map {
+		height: 800px;
+		width: 100%;
+	}
+</style>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-2">
+			Dis be da tools
+		</div>
+		<div class="col-10">
+			<div id="mapdiv" class="map"></div>
+			<script type="text/javascript">
+
+				function partial(func /*, 0..n args */) {
+					var args = Array.prototype.slice.call(arguments, 1);
+					return function () {
+						var allArguments = args.concat(Array.prototype.slice.call(arguments));
+						return func.apply(this, allArguments);
+					};
+				}
+
+				class data {
+					constructor(lat, lng, img, id) {
+						this.lat = lat;
+						this.lng = lng;
+						this.img = img
+						this.id = id;
+					}
+
+					showDetails(obj) {
+						alert("My id is " + obj.id);
+					}
+
+					addToLayer(layer) {
+						var size = new OpenLayers.Size(32, 37);
+						var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+						var icon = new OpenLayers.Icon('img/marker/' + this.img, size, offset);
+						var marker = new OpenLayers.Marker(new OpenLayers.LonLat(this.lat, this.lng), icon);
+						layer.addMarker(marker);
+
+						var func = partial(this.showDetails,this);
+						marker.events.register('click', layer, func);
+					}
+				}
+
+				var map = new OpenLayers.Map("mapdiv");
+				map.addLayer(new OpenLayers.Layer.OSM());
+
+
+				var markers = new OpenLayers.Layer.Markers("Markers");
+				var loca = new data(0.1279688, 51.5077286, "alpha.jpg", 69);
+
+				loca.addToLayer(markers);
+				map.addLayer(markers);
+
+				// markers.addMarker(new OpenLayers.Marker(lonLat));
+
+				var lonLat = new OpenLayers.LonLat(0.1279688, 51.5077286);
+				var zoom = 16;
+				map.setCenter(lonLat, zoom);
+			</script>
+		</div>
+	</div>
+</div>
+</div>
