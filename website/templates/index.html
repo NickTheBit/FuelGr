@@ -11,12 +11,18 @@
 		<div class="col-2">
 			<!-- This is The infopannel -->
 			<div class="card" style="width: 15rem;">
-				<img src="..." class="card-img-top" alt="...">
+				<img src="..." class="card-img-top" alt="..." id="DetailsImage" style="width: 25%;">
 				<div class="card-body">
-				  <h5 class="card-title">Wellcome to FuelGr</h5>
-				  <p class="card-text">Click on a station to view data and place orders</p>
-				  <a href="#" class="btn btn-primary">More info</a>
+					<h5 class="card-title" id="InfoTitle">Wellcome to FuelGr</h5>
+					<p class="card-text" id="InfoDets">Click on a station to view data and place orders</p>
+					<a href="#" class="btn btn-primary">More info</a>
 				</div>
+			</div>
+			<br>
+			<div class="card" style="width: 15rem;">
+				<ul class="list-group list-group-flush" id="fuelList">
+				  <!-- This is where fuel prices go -->
+				</ul>
 			  </div>
 
 		</div>
@@ -24,6 +30,38 @@
 			<div id="map"></div>
 
 			<script type="text/javascript">
+
+				function inspectStation(stationId) {
+					$.ajax({
+						type: "GET",
+						url: "http://127.0.0.1:8000/api/station/" + stationId.toString(),
+						dataType: "json",
+						success: function (result, status, xhr) {
+							document.getElementById("InfoTitle").innerHTML = result["gasstationowner"];
+							document.getElementById("InfoDets").innerHTML = result["gasstationaddress"];
+							document.getElementById("DetailsImage").src = "static/icons/" + result["fuelcompid"] + ".png";
+							
+						},
+						error: function (xhr, status, error) {
+							alert("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+						}
+					});
+					console.log(stationId);
+					$.ajax({
+						type: "GET",
+						url: "http://127.0.0.1:8000/api/price/" + stationId.toString(),
+						dataType: "json",
+						success: function (result, status, xhr) {
+							document.getElementById("fuelList").innerHTML = "";
+							for (var i = 0; i < result.length; i++) {
+								document.getElementById("fuelList").innerHTML += "<li class='list-group-item'>" + result[i]["fuelnormalname"] + result[i]["fuelprice"] + "</li>" ;
+							}
+						},
+						error: function (xhr, status, error) {
+							alert("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+						}
+					});
+				}
 
 				function initMap() {
 					var map = new google.maps.Map(document.getElementById("map"), {
@@ -46,15 +84,16 @@
 									position: new google.maps.LatLng(result[i]["gasstationlat"], result[i]["gasstationlong"]),
 									map: map,
 									icon: "static/icons/" + result[i]["fuelcompid"] + ".png",
-									title: result[i]["ddnormalname"]
+									title: result[i]["gasstationowner"]
 								});
-								google.maps.event.addListener(marker, 'click', (function (marker, i) {
+								var id = result[i]["gasstationid"];
+								google.maps.event.addListener(marker, 'click', (function (marker, id) {
 									return function () {
 										// On click function goes here
-										infowindow.setContent(locations[i][0]);
-										infowindow.open(map, marker);
+										inspectStation(id);
 									}
-								})(marker, i));
+								})(marker, id));
+
 								markers.push(marker);
 							}
 						},
