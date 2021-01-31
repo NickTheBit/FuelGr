@@ -1,6 +1,6 @@
 {% include "header.html" %}
 <style>
-	.map {
+	#map {
 		height: 800px;
 		width: 100%;
 	}
@@ -9,58 +9,63 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-2">
-			Dis be da tools
+			<!-- This is The infopannel -->
+			<div class="card" style="width: 15rem;">
+				<img src="..." class="card-img-top" alt="...">
+				<div class="card-body">
+				  <h5 class="card-title">Wellcome to FuelGr</h5>
+				  <p class="card-text">Click on a station to view data and place orders</p>
+				  <a href="#" class="btn btn-primary">More info</a>
+				</div>
+			  </div>
+
 		</div>
 		<div class="col-10">
-			<div id="mapdiv" class="map"></div>
+			<div id="map"></div>
+
 			<script type="text/javascript">
 
-				function partial(func /*, 0..n args */) {
-					var args = Array.prototype.slice.call(arguments, 1);
-					return function () {
-						var allArguments = args.concat(Array.prototype.slice.call(arguments));
-						return func.apply(this, allArguments);
-					};
+				function initMap() {
+					var map = new google.maps.Map(document.getElementById("map"), {
+						center: new google.maps.LatLng(39.6148882, 22.4303055),
+						zoom: 13,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					});
+
+					var marker;
+					var markers = [];
+
+					// Calling api when site is loaded
+					$.ajax({
+						type: "GET",
+						url: "http://127.0.0.1:8000/api/station",
+						dataType: "json",
+						success: function (result, status, xhr) {
+							for (var i = 0; i < result.length; i++) {
+								marker = new google.maps.Marker({
+									position: new google.maps.LatLng(result[i]["gasstationlat"], result[i]["gasstationlong"]),
+									map: map,
+									icon: "static/icons/" + result[i]["fuelcompid"] + ".png",
+									title: result[i]["ddnormalname"]
+								});
+								google.maps.event.addListener(marker, 'click', (function (marker, i) {
+									return function () {
+										// On click function goes here
+										infowindow.setContent(locations[i][0]);
+										infowindow.open(map, marker);
+									}
+								})(marker, i));
+								markers.push(marker);
+							}
+						},
+						error: function (xhr, status, error) {
+							alert("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+						}
+					});
 				}
 
-				class data {
-					constructor(lat, lng, img, id) {
-						this.loc = new OpenLayers.LonLat(lat,lng);
-						this.img = img
-						this.id = id;
-					}
-
-					showDetails(obj) {
-						alert("My id is " + obj.id);
-					}
-
-					addToLayer(layer) {
-						var size = new OpenLayers.Size(32, 37);
-						var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-						var icon = new OpenLayers.Icon('static/icons/' + this.img, size, offset);
-						var marker = new OpenLayers.Marker(this.loc, icon);
-						layer.addMarker(marker);
-
-						var func = partial(this.showDetails,this);
-						marker.events.register('click', layer, func);
-					}
-				}
-
-				// Loading map container and basic layer
-				var map = new OpenLayers.Map("mapdiv");
-				map.addLayer(new OpenLayers.Layer.OSM());
-
-				// data class will be used to load future gasstations
-				var markers = new OpenLayers.Layer.Markers("Markers");
-				var loca = new data(0.1279688, 51.5077286, "4.png", 422);
-
-				loca.addToLayer(markers);
-				map.addLayer(markers);
 
 
-				var lonLat = new OpenLayers.LonLat(0.1279688, 51.5077286);
-				var zoom = 16;
-				map.setCenter(lonLat, zoom);
 			</script>
 		</div>
 	</div>
