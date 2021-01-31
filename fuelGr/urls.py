@@ -27,6 +27,8 @@ router.register(r'station', views.GasStationViewSet, basename="")
 router.register(r'station/<int:pk>', views.GasStationViewSet , basename="station")
 router.register(r'price', views.StationPrices, basename="")
 router.register(r'price/<int:pk>', views.StationPrices , basename="price")
+router.register(r'order', views.UserOrders, basename="")
+router.register(r'order/<int:pk>', views.UserOrders , basename="order")
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
